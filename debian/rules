@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ 
+
+override_dh_auto_configure:
+	dh_auto_configure -Bbuild -Scmake -Ddaemon/ThunderboltService/Linux --
+
+override_dh_auto_build:
+	dh_auto_build -Bbuild
+
+override_dh_auto_install:
+	#disables running postinstall steps
+	sed -i -n '/post_install/!p' build/cmake_install.cmake
+	dh_auto_install -Bbuild
+
+override_dh_auto_clean:
+	rm -rf build

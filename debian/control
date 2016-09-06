@@ -1,0 +1,18 @@
+Source: thunderbolt-software-daemon
+Section: admin
+Priority: optional
+Maintainer: Intel Thunderbolt Linux Team <thunderbolt-linux@intel.com>
+Build-Depends: debhelper (>=9),
+	       libnl-3-dev,
+	       libnl-genl-3-dev,
+	       cmake,
+	       libdbus-c++-dev
+Standards-Version: 3.9.8
+Vcs-Git: https://github.com/01org/thunderbolt-software-daemon.git
+Vcs-Browser: https://github.com/01org/thunderbolt-software-daemon
+
+Package: thunderbolt-software-daemon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Intel Thunderbolt software daemon
+ Provides thunderbolt neteworking support
