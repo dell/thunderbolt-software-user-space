@@ -1,0 +1,2 @@
+SUBSYSTEM=="module", DEVPATH=="/module/thunderbolt_icm", TAG+="systemd", ENV{SYSTEMD_WANTS}+="thunderbolt.service"
+SUBSYSTEM=="net", SUBSYSTEMS=="pci", DRIVERS=="thunderbolt", ACTION=="add", NAME="/%k"

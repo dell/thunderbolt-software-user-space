@@ -1,7 +1,39 @@
 Thunderbolt Linux releases
 ==========================
+6-December-2016:
+===============
+tbtfwucli
+---------
+    - Initial release introducing FW update CLI sample for FW update 
+	  on Thunderbolt(TM) 3 DSL/JHL6000 controllers (host only, 
+	  no device FW update support yet)
+    - tbtfwucli build 0.0.1 (16.2.57.22)
+	
+libtbtfwu
+---------
+    - Initial release introducing FW update shared library for FW update 
+	  on Thunderbolt(TM) 3 DSL/JHL6000 controllers (host only, 
+	  no device FW update support yet)
+    - libtbtfwu build 0.9.0 (16.2.57.13)
+
+Daemon
+------
+    - Added support for host FW update on Thunderbolt(TM) 3 DSL/JHL6000
+      controllers (host only, no device FW update support yet)
+    - License changed from GPL to BSD-style
+	- Daemon build 16.2.57.13
+
+- All components work with kernel build 16.1.55.1 
+
+27-October-2016:
+===============
+Daemon
+------
+	- Fix in udev rules to use the correct driver name 
+	- Daemon build 16.1.54.1	
+
 4-August-2016:
-============
+=============
 Daemon
 ------
 	- udev rules updated following change in kernel module to "thunderbolt_icm"
