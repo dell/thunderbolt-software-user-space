@@ -8,11 +8,24 @@ Build-Depends: debhelper (>=9),
 	       cmake,
 	       libdbus-c++-dev
 Standards-Version: 3.9.8
-Vcs-Git: https://github.com/01org/thunderbolt-software-daemon.git
-Vcs-Browser: https://github.com/01org/thunderbolt-software-daemon
+Vcs-Git: https://github.com/01org/thunderbolt-software-user-space.git
+Vcs-Browser: https://github.com/01org/thunderbolt-software-user-space
 
 Package: thunderbolt-software-daemon
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Intel Thunderbolt software daemon
+Description: Intel Thunderbolt software user space
  Provides thunderbolt neteworking support
+
+Package: libtbtfwu1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: library for Intel Thunderbolt software fw update
+ Library for tbt fw update
+
+Package: tbtfwucli
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Intel Thunderbolt software command line tool
+ command line tool
+

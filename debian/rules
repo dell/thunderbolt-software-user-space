@@ -4,15 +4,21 @@
 	dh $@ 
 
 override_dh_auto_configure:
-	dh_auto_configure -Bbuild -Scmake -Ddaemon/ThunderboltService/Linux --
+	dh_auto_configure -pthunderbolt-software-daemon -Bbuild_service -Scmake -DThunderboltService/Linux --
+	dh_auto_configure -plibtbtfwu1 -Bbuild_library -Scmake -Dfwupdate/libtbtfwu/ --
 
 override_dh_auto_build:
-	dh_auto_build -Bbuild
+	dh_auto_build -pthunderbolt-software-daemon -Bbuild_service
+	dh_auto_build -plibtbtfwu1 -Bbuild_library
+	PATH=`pwd`/build_library:$$PATH dh_auto_configure -ptbtfwucli -Bbuild_commandline -Scmake -Dfwupdate/tbtfwucli/ --
+	dh_auto_build -ptbtfwucli -Bbuild_commandline
 
 override_dh_auto_install:
 	#disables running postinstall steps
-	sed -i -n '/post_install/!p' build/cmake_install.cmake
-	dh_auto_install -Bbuild
+	sed -i -n '/post_install/!p' build_service/cmake_install.cmake
+	dh_auto_install --destdir debian/thunderbolt-software-daemon -Bbuild_service
+	dh_auto_install --destdir debian/libtbtfwu1 -Bbuild_library
+	dh_auto_install --destdir debian/tbtfwucli -Bbuild_commandline
 
 override_dh_auto_clean:
-	rm -rf build
+	rm -rf build*
