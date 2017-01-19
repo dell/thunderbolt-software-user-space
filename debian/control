@@ -23,6 +23,12 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: library for Intel Thunderbolt software fw update
  Library for tbt fw update
 
+Package: libtbtfwu-dev
+Architecture: any
+Depends: libtbtfwu1
+Description: development files for Intel Thunderbolt software fw update library
+ Development fiels for tbt fw update library
+
 Package: tbtfwucli
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}

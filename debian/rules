@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export LIBRARY=libtbtfwu1
+export DEVPACK=libtbtfwu-dev
 %:
 	dh $@ 
 
@@ -17,8 +19,16 @@ override_dh_auto_install:
 	#disables running postinstall steps
 	sed -i -n '/post_install/!p' build_service/cmake_install.cmake
 	dh_auto_install --destdir debian/thunderbolt-software-daemon -Bbuild_service
-	dh_auto_install --destdir debian/libtbtfwu1 -Bbuild_library
+	dh_auto_install --destdir debian/$(LIBRARY) -Bbuild_library
 	dh_auto_install --destdir debian/tbtfwucli -Bbuild_commandline
+	#strip from the library to build the development package
+	mkdir -p debian/$(DEVPACK)
+	cp -R debian/$(LIBRARY)/* debian/$(DEVPACK)
+	rm -rf debian/$(LIBRARY)/usr/include \
+		debian/$(LIBRARY)/usr/lib/*/pkgconfig \
+		debian/$(LIBRARY)/usr/lib/*/*.a \
+		debian/$(LIBRARY)/usr/lib/*/*.so
+	rm -rf debian/$(DEVPACK)/usr/lib/*/*.so.*
 
 override_dh_auto_clean:
 	rm -rf build*
