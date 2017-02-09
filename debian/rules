@@ -3,7 +3,7 @@
 export LIBRARY=libtbtfwu1
 export DEVPACK=libtbtfwu-dev
 %:
-	dh $@ 
+	dh $@ --with autoreconf
 
 override_dh_auto_configure:
 	dh_auto_configure -pthunderbolt-software-daemon -Bbuild_service -Scmake -DThunderboltService/Linux --

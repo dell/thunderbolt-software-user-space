@@ -6,6 +6,7 @@ Build-Depends: debhelper (>=9),
 	       libnl-3-dev,
 	       libnl-genl-3-dev,
 	       cmake,
+               dh-autoreconf,
 	       libdbus-c++-dev
 Standards-Version: 3.9.8
 Vcs-Git: https://github.com/01org/thunderbolt-software-user-space.git
