@@ -25,7 +25,7 @@ Description: library for Intel Thunderbolt software fw update
 
 Package: libtbtfwu-dev
 Architecture: any
-Depends: libtbtfwu1
+Depends: libtbtfwu1, ${misc:Depends}
 Description: development files for Intel Thunderbolt software fw update library
  Development fiels for tbt fw update library
 
