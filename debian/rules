@@ -17,7 +17,9 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	#disables running postinstall steps
-	sed -i -n '/post_install/!p' build_service/cmake_install.cmake
+	sed -i -n '/post_install/!p;' build_service/cmake_install.cmake
+	# fix the udev rule install location
+	sed -i  "s,/etc/udev/rules.d,/lib/udev/rules.d,g" build_service/cmake_install.cmake
 	dh_auto_install --destdir debian/thunderbolt-software-daemon -Bbuild_service
 	dh_auto_install --destdir debian/$(LIBRARY) -Bbuild_library
 	dh_auto_install --destdir debian/tbtfwucli -Bbuild_commandline
