@@ -1,5 +1,5 @@
-thunderbolt-software-daemon (2017.01.19-1) UNRELEASED; urgency=medium
+thunderbolt-software-daemon (2017.01.19-1) unstable; urgency=medium
 
-  * Initial release (Closes: #####)
+  * Initial release (Closes: #855065)
 
- -- Mario Limonciello <mario.limonciello@dell.com>  Thu, 19 Jan 2017 13:48:07 -0600
+ -- Mario Limonciello <mario.limonciello@dell.com>  Mon, 13 Feb 2017 14:04:07 -0600
