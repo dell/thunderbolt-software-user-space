@@ -15,25 +15,34 @@ Vcs-Browser: https://github.com/01org/thunderbolt-software-user-space
 Package: thunderbolt-software-daemon
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Intel Thunderbolt software user space
- Provides thunderbolt neteworking support
+Description: Intel Thunderbolt software daemon
+ Provides thunderbolt networking and NVM flashing support.
 
 Package: libtbtfwu1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: library for Intel Thunderbolt software fw update
- Library for tbt fw update
+Description: Intel Thunderbolt software firmware library
+ Provides the interfaces for firmware flashing applications
+ to interact with an Intel Thunderbolt controller.
 
 Package: libtbtfwu-dev
 Architecture: any
 Depends: libtbtfwu1 (= ${binary:Version}), ${misc:Depends}
 Section: libdevel
-Description: development files for Intel Thunderbolt software fw update library
- Development fiels for tbt fw update library
+Description: Intel Thunderbolt software development files
+ Development files for the Intel Thunderbolt firmware update
+ library.
+ .
+ This allows for external packages to link with the Intel
+ Thunderbolt firmware update library.
 
-Package: tbtfwucli
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Intel Thunderbolt software command line tool
- command line tool
+#
+# upstream doesn't want this in wider distribution yet.
+#
+#Package: tbtfwucli
+#Architecture: any
+#Depends: ${shlibs:Depends}, ${misc:Depends}
+#Description: Intel Thunderbolt software command line tool
+# Command line tool for Intel thunderbolt firmware library.
+
 

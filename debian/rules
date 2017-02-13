@@ -12,8 +12,11 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	dh_auto_build -pthunderbolt-software-daemon -Bbuild_service
 	dh_auto_build -plibtbtfwu1 -Bbuild_library
-	PATH=`pwd`/build_library:$$PATH dh_auto_configure -ptbtfwucli -Bbuild_commandline -Scmake -Dfwupdate/tbtfwucli/ --
-	dh_auto_build -ptbtfwucli -Bbuild_commandline
+#
+# Disabled for now until upstream wants it in wider distribution
+#	PATH=`pwd`/build_library:$$PATH dh_auto_configure -ptbtfwucli -Bbuild_commandline -Scmake -Dfwupdate/tbtfwucli/ --
+#	dh_auto_build -ptbtfwucli -Bbuild_commandline
+#
 
 override_dh_auto_install:
 	#disables running postinstall steps
@@ -22,7 +25,10 @@ override_dh_auto_install:
 	sed -i  "s,/etc/udev/rules.d,/lib/udev/rules.d,g" build_service/cmake_install.cmake
 	dh_auto_install --destdir debian/thunderbolt-software-daemon -Bbuild_service
 	dh_auto_install --destdir debian/$(LIBRARY) -Bbuild_library
-	dh_auto_install --destdir debian/tbtfwucli -Bbuild_commandline
+#
+# Disabled for now until upstream wants it in wider distribution
+#	dh_auto_install --destdir debian/tbtfwucli -Bbuild_commandline
+#
 	#strip from the library to build the development package
 	mkdir -p debian/$(DEVPACK)
 	cp -R debian/$(LIBRARY)/* debian/$(DEVPACK)
