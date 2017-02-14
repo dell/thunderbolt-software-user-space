@@ -2,8 +2,12 @@
 
 export LIBRARY=libtbtfwu1
 export DEVPACK=libtbtfwu-dev
+
+export META_VERSION := $(shell dpkg-gencontrol -pthunderbolt-icm-dkms -O 2>/dev/null | sed 's,-.*,,'| awk '$$1 == "Version:" { print $$2; }' )
+export META_DISTDIR := debian/thunderbolt-icm-dkms/usr/src/thunderbolt-icm-$(META_VERSION)
+
 %:
-	dh $@ --with autoreconf
+	dh $@ --with autoreconf,dkms
 
 override_dh_auto_configure:
 	dh_auto_configure -pthunderbolt-software-daemon -Bbuild_service -Scmake -DThunderboltService/Linux --
@@ -38,5 +42,12 @@ override_dh_auto_install:
 		debian/$(LIBRARY)/usr/lib/*/*.so
 	rm -rf debian/$(DEVPACK)/usr/lib/*/*.so.*
 
+	#add in DKMS package
+	install -d -m 755 $(META_DISTDIR)
+	cp -R debian/thunderbolt-icm/* $(META_DISTDIR)
+
 override_dh_auto_clean:
 	rm -rf build*
+
+override_dh_dkms:
+	dh_dkms -V
