@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * Intel Thunderbolt(TM) driver
+ * Thunderbolt(TM) driver
  * Copyright(c) 2014 - 2016 Intel Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -51,36 +51,7 @@ enum {
 };
 #define NHI_CMD_MAX (__NHI_CMD_MAX - 1)
 
-/* NHI genetlink policy */
-static const struct nla_policy nhi_genl_policy[NHI_ATTR_MAX + 1] = {
-	[NHI_ATTR_DRV_VERSION]		= { .type = NLA_NUL_STRING, },
-	[NHI_ATTR_NVM_VER_OFFSET]	= { .type = NLA_U16, },
-	[NHI_ATTR_NUM_PORTS]		= { .type = NLA_U8, },
-	[NHI_ATTR_DMA_PORT]		= { .type = NLA_U8, },
-	[NHI_ATTR_SUPPORT_FULL_E2E]	= { .type = NLA_FLAG, },
-	[NHI_ATTR_MAILBOX_CMD]		= { .type = NLA_U32, },
-	[NHI_ATTR_PDF]			= { .type = NLA_U32, },
-	[NHI_ATTR_MSG_TO_ICM]		= { .type = NLA_BINARY,
-					.len = TBT_ICM_RING_MAX_FRAME_SIZE },
-	[NHI_ATTR_MSG_FROM_ICM]		= { .type = NLA_BINARY,
-					.len = TBT_ICM_RING_MAX_FRAME_SIZE },
-	[NHI_ATTR_LOCAL_ROUTE_STRING]	= {
-					.len = sizeof(struct route_string) },
-	[NHI_ATTR_LOCAL_UUID]		= { .len = sizeof(uuid_be) },
-	[NHI_ATTR_REMOTE_UUID]		= { .len = sizeof(uuid_be) },
-	[NHI_ATTR_LOCAL_DEPTH]		= { .type = NLA_U8, },
-	[NHI_ATTR_ENABLE_FULL_E2E]	= { .type = NLA_FLAG, },
-	[NHI_ATTR_MATCH_FRAME_ID]	= { .type = NLA_FLAG, },
-};
-
-/* NHI genetlink family */
-static struct genl_family nhi_genl_family = {
-	.id		= GENL_ID_GENERATE,
-	.hdrsize	= FIELD_SIZEOF(struct tbt_nhi_ctxt, id),
-	.name		= NHI_GENL_NAME,
-	.version	= NHI_GENL_VERSION,
-	.maxattr	= NHI_ATTR_MAX,
-};
+static struct genl_family nhi_genl_family;
 
 static LIST_HEAD(controllers_list);
 static DEFINE_MUTEX(controllers_list_mutex);
@@ -304,7 +275,6 @@ static int nhi_genl_query_information(__always_unused struct sk_buff *u_skb,
 {
 	struct tbt_nhi_ctxt *nhi_ctxt;
 	struct sk_buff *skb;
-	bool msg_too_long;
 	int res = -ENODEV;
 	u32 *msg_head;
 
@@ -335,6 +305,8 @@ static int nhi_genl_query_information(__always_unused struct sk_buff *u_skb,
 
 	nhi_ctxt = nhi_search_ctxt(*(u32 *)info->userhdr);
 	if (nhi_ctxt && !nhi_ctxt->d0_exit) {
+		bool msg_too_long;
+
 		*msg_head = nhi_ctxt->id;
 
 		msg_too_long = !!nla_put_string(skb, NHI_ATTR_DRV_VERSION,
@@ -718,8 +690,6 @@ static void nhi_handle_notification_msg(struct tbt_nhi_ctxt *nhi_ctxt,
 	struct port_net_dev *port;
 	u8 port_num;
 
-#define INTER_DOMAIN_LINK_SHIFT 0
-#define INTER_DOMAIN_LINK_MASK	GENMASK(2, INTER_DOMAIN_LINK_SHIFT)
 	switch (msg[3]) {
 
 	case NC_INTER_DOMAIN_CONNECTED:
@@ -771,8 +741,7 @@ static bool nhi_handle_icm_response_msg(struct tbt_nhi_ctxt *nhi_ctxt,
 		if (unlikely(msg[2] & APPROVE_INTER_DOMAIN_ERROR))
 			return send_event;
 
-		port_num = PORT_NUM_FROM_LINK((msg[5]&INTER_DOMAIN_LINK_MASK)>>
-					       INTER_DOMAIN_LINK_SHIFT);
+		port_num = PORT_NUM_FROM_MSG(msg[5]);
 
 		if (unlikely(port_num >= nhi_ctxt->num_ports))
 			return send_event;
@@ -996,6 +965,28 @@ static inline void nhi_set_int_vec(struct tbt_nhi_ctxt *nhi_ctxt, u32 path,
 	iowrite32(ivr | (msix_msg_id << shift), reg);
 }
 
+/* NHI genetlink policy */
+static const struct nla_policy nhi_genl_policy[NHI_ATTR_MAX + 1] = {
+	[NHI_ATTR_DRV_VERSION]		= { .type = NLA_NUL_STRING, },
+	[NHI_ATTR_NVM_VER_OFFSET]	= { .type = NLA_U16, },
+	[NHI_ATTR_NUM_PORTS]		= { .type = NLA_U8, },
+	[NHI_ATTR_DMA_PORT]		= { .type = NLA_U8, },
+	[NHI_ATTR_SUPPORT_FULL_E2E]	= { .type = NLA_FLAG, },
+	[NHI_ATTR_MAILBOX_CMD]		= { .type = NLA_U32, },
+	[NHI_ATTR_PDF]			= { .type = NLA_U32, },
+	[NHI_ATTR_MSG_TO_ICM]		= { .type = NLA_BINARY,
+					.len = TBT_ICM_RING_MAX_FRAME_SIZE },
+	[NHI_ATTR_MSG_FROM_ICM]		= { .type = NLA_BINARY,
+					.len = TBT_ICM_RING_MAX_FRAME_SIZE },
+	[NHI_ATTR_LOCAL_ROUTE_STRING]	= {
+					.len = sizeof(struct route_string) },
+	[NHI_ATTR_LOCAL_UUID]		= { .len = sizeof(uuid_be) },
+	[NHI_ATTR_REMOTE_UUID]		= { .len = sizeof(uuid_be) },
+	[NHI_ATTR_LOCAL_DEPTH]		= { .type = NLA_U8, },
+	[NHI_ATTR_ENABLE_FULL_E2E]	= { .type = NLA_FLAG, },
+	[NHI_ATTR_MATCH_FRAME_ID]	= { .type = NLA_FLAG, },
+};
+
 /* NHI genetlink operations array */
 static const struct genl_ops nhi_ops[] = {
 	{
@@ -1031,6 +1022,16 @@ static const struct genl_ops nhi_ops[] = {
 		.doit = nhi_genl_approve_networking,
 		.flags = GENL_ADMIN_PERM,
 	},
+};
+
+/* NHI genetlink family */
+static struct genl_family nhi_genl_family __ro_after_init = {
+	.hdrsize	= FIELD_SIZEOF(struct tbt_nhi_ctxt, id),
+	.name		= NHI_GENL_NAME,
+	.version	= NHI_GENL_VERSION,
+	.maxattr	= NHI_ATTR_MAX,
+	.ops		= nhi_ops,
+	.n_ops		= ARRAY_SIZE(nhi_ops),
 };
 
 static int nhi_suspend(struct device *dev) __releases(&nhi_ctxt->send_sem)
@@ -1492,7 +1493,7 @@ static int __init icm_nhi_init(void)
 	if (dmi_match(DMI_BOARD_VENDOR, "Apple Inc."))
 		return -ENODEV;
 
-	rc = genl_register_family_with_ops(&nhi_genl_family, nhi_ops);
+	rc = genl_register_family(&nhi_genl_family);
 	if (rc)
 		goto failure;
 
