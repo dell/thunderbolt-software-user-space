@@ -1,53 +1,16 @@
 #!/usr/bin/make -f
 
-export LIBRARY=libtbtfwu1
-export DEVPACK=libtbtfwu-dev
-
-export META_VERSION := $(shell dpkg-gencontrol -pthunderbolt-icm-dkms -O 2>/dev/null | sed 's,-.*,,'| awk '$$1 == "Version:" { print $$2; }' )
-export META_DISTDIR := debian/thunderbolt-icm-dkms/usr/src/thunderbolt-icm-$(META_VERSION)
-
 %:
-	dh $@ --with autoreconf,dkms
+	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure -pthunderbolt-software-daemon -Bbuild_service -Scmake -DThunderboltService/Linux --
-	dh_auto_configure -plibtbtfwu1 -Bbuild_library -Scmake -Dfwupdate/libtbtfwu/ --
+	dh_auto_configure -pthunderbolt-software-user-space -Bbuild_userspace -Scmake -D. --
 
 override_dh_auto_build:
-	dh_auto_build -pthunderbolt-software-daemon -Bbuild_service
-	dh_auto_build -plibtbtfwu1 -Bbuild_library
-#
-# Disabled for now until upstream wants it in wider distribution
-#	PATH=`pwd`/build_library:$$PATH dh_auto_configure -ptbtfwucli -Bbuild_commandline -Scmake -Dfwupdate/tbtfwucli/ --
-#	dh_auto_build -ptbtfwucli -Bbuild_commandline
-#
+	dh_auto_build -pthunderbolt-software-user-space -Bbuild_userspace
 
 override_dh_auto_install:
-	#disables running postinstall steps
-	sed -i -n '/post_install/!p;' build_service/cmake_install.cmake
-	# fix the udev rule install location
-	sed -i  "s,/etc/udev/rules.d,/lib/udev/rules.d,g" build_service/cmake_install.cmake
-	dh_auto_install --destdir debian/thunderbolt-software-daemon -Bbuild_service
-	dh_auto_install --destdir debian/$(LIBRARY) -Bbuild_library
-#
-# Disabled for now until upstream wants it in wider distribution
-#	dh_auto_install --destdir debian/tbtfwucli -Bbuild_commandline
-#
-	#strip from the library to build the development package
-	mkdir -p debian/$(DEVPACK)
-	cp -R debian/$(LIBRARY)/* debian/$(DEVPACK)
-	rm -rf debian/$(LIBRARY)/usr/include \
-		debian/$(LIBRARY)/usr/lib/*/pkgconfig \
-		debian/$(LIBRARY)/usr/lib/*/*.a \
-		debian/$(LIBRARY)/usr/lib/*/*.so
-	rm -rf debian/$(DEVPACK)/usr/lib/*/*.so.*
-
-	#add in DKMS package
-	install -d -m 755 $(META_DISTDIR)
-	cp -R debian/thunderbolt-icm/* $(META_DISTDIR)
+	dh_auto_install --destdir debian/thunderbolt-software-user-space -Bbuild_userspace
 
 override_dh_auto_clean:
 	rm -rf build*
-
-override_dh_dkms:
-	dh_dkms -V

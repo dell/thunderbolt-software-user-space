@@ -1,59 +1,20 @@
-Source: thunderbolt-software-daemon
+Source: thunderbolt-software-user-space
 Section: admin
 Priority: optional
 Maintainer: Debian EFI <debian-efi@lists.debian.org>
 Uploaders: Mario Limonciello <mario.limonciello@dell.com>
-Build-Depends: debhelper (>=9),
-	       libnl-3-dev,
-	       libnl-genl-3-dev,
-	       cmake,
-               dh-autoreconf,
-               dkms,
-	       libdbus-c++-dev
+Build-Depends:  debhelper (>=9),
+		libboost-dev,
+		libboost-filesystem-dev,
+		libboost-program-options-dev,
+		cmake,
 Standards-Version: 3.9.8
 Vcs-Git: https://github.com/01org/thunderbolt-software-user-space.git
 Vcs-Browser: https://github.com/01org/thunderbolt-software-user-space
 
-Package: thunderbolt-software-daemon
+Package: thunderbolt-software-user-space
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: thunderbolt-icm-dkms
-Description: Intel Thunderbolt software daemon
- Provides thunderbolt networking and NVM flashing support.
-
-Package: libtbtfwu1
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Intel Thunderbolt software firmware library
- Provides the interfaces for firmware flashing applications
- to interact with an Intel Thunderbolt controller.
-
-Package: libtbtfwu-dev
-Architecture: any
-Depends: libtbtfwu1 (= ${binary:Version}), ${misc:Depends}
-Section: libdevel
-Description: Intel Thunderbolt software development files
- Development files for the Intel Thunderbolt firmware update
- library.
- .
- This allows for external packages to link with the Intel
- Thunderbolt firmware update library.
-
-Package: thunderbolt-icm-dkms
-Architecture: all
-Depends: dkms, ${misc:Depends}
-Description: Intel thunderbolt software kernel module
- This is the kernel module required for the thunderbolt
- software daemon. It is not yet available in the kernel
- upstream, but is necessary to use the daemon.
-
-#
-# upstream doesn't want this in wider distribution yet.
-#
-#Package: tbtfwucli
-#Architecture: any
-#Depends: ${shlibs:Depends}, ${misc:Depends}
-#Description: Intel Thunderbolt software command line tool
-# Command line tool for Intel thunderbolt firmware library.
-
-
+Description: Intel Thunderbolt userspace components
+ Provides components for using Intel Thunderbolt controllers with
+ security level features

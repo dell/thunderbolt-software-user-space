@@ -1,4 +1,4 @@
-thunderbolt-software-daemon (2017.01.19-1) unstable; urgency=medium
+thunderbolt-software-user-space (0.9-1) unstable; urgency=medium
 
   * Initial release (Closes: #855065)
 

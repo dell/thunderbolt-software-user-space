@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: thunderbolt-software-daemon
-Source: <https://github.com/01org/thunderbolt-software-daemon>
+Upstream-Name: thunderbolt-software-user-space
+Source: <https://github.com/01org/thunderbolt-software-user-space>
 
 Files: *
 Copyright: 2014-2016 Intel Corporation
