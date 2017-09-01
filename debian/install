@@ -1,0 +1,3 @@
+build_userspace/tbtacl/tbtacl-write lib/udev/
+build_userspace/tbtadm/tbtadm usr/bin
+tbtacl/tbtacl.rules  /lib/udev/rules.d
